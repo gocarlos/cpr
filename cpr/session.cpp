@@ -104,8 +104,8 @@ void Session::Impl::freeHolder(CurlHolder* holder) {
 CurlHolder* Session::Impl::newHolder() {
     CurlHolder* holder = new CurlHolder();
     holder->handle = curl_easy_init();
-    holder->chunk = NULL;
-    holder->formpost = NULL;
+    holder->chunk = nullptr;
+    holder->formpost = nullptr;
     return holder;
 }
 
@@ -124,7 +124,7 @@ void Session::Impl::SetParameters(Parameters&& parameters) {
 void Session::Impl::SetHeader(const Header& header) {
     auto curl = curl_->handle;
     if (curl) {
-        struct curl_slist* chunk = NULL;
+        struct curl_slist* chunk = nullptr;
         for (auto item = header.cbegin(); item != header.cend(); ++item) {
             auto header_string = std::string{item->first};
             if (item->second.empty()) {
@@ -216,8 +216,8 @@ void Session::Impl::SetProxies(Proxies&& proxies) {
 void Session::Impl::SetMultipart(Multipart&& multipart) {
     auto curl = curl_->handle;
     if (curl) {
-        struct curl_httppost* formpost = NULL;
-        struct curl_httppost* lastptr = NULL;
+        struct curl_httppost* formpost = nullptr;
+        struct curl_httppost* lastptr = nullptr;
 
         for (auto& part : multipart.parts) {
             std::vector<struct curl_forms> formdata;
@@ -249,8 +249,8 @@ void Session::Impl::SetMultipart(Multipart&& multipart) {
 void Session::Impl::SetMultipart(const Multipart& multipart) {
     auto curl = curl_->handle;
     if (curl) {
-        struct curl_httppost* formpost = NULL;
-        struct curl_httppost* lastptr = NULL;
+        struct curl_httppost* formpost = nullptr;
+        struct curl_httppost* lastptr = nullptr;
 
         for (auto& part : multipart.parts) {
             std::vector<struct curl_forms> formdata;
@@ -346,8 +346,7 @@ Response Session::Impl::Delete() {
 Response Session::Impl::Download(std::ofstream& file) {
     auto curl = curl_->handle;
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
     }
 
     return makeDownloadRequest(curl, file);
@@ -356,8 +355,7 @@ Response Session::Impl::Download(std::ofstream& file) {
 Response Session::Impl::Get() {
     auto curl = curl_->handle;
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
     }
 
     return makeRequest(curl);
@@ -366,7 +364,7 @@ Response Session::Impl::Get() {
 Response Session::Impl::Head() {
     auto curl = curl_->handle;
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, NULL);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, nullptr);
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     }
 
@@ -396,8 +394,7 @@ Response Session::Impl::Patch() {
 Response Session::Impl::Post() {
     auto curl = curl_->handle;
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_NOBODY, 0L);
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_easy_setopt(curl, CURLOPT_HTTPPOST, nullptr);
     }
 
     return makeRequest(curl);
